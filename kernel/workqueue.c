@@ -4677,11 +4677,9 @@ static int workqueue_cpu_up_callback(struct notifier_block *nfb,
 		for_each_pool(pool, pi) {
 			mutex_lock(&pool->attach_mutex);
 
-			if (pool->cpu == cpu)
-				rebind_workers(pool,
-					(action & ~CPU_TASKS_FROZEN)
-						!= CPU_DOWN_FAILED);
-			else if (pool->cpu < 0)
+			if (pool->cpu == cpu) {
+				rebind_workers(pool);
+			} else if (pool->cpu < 0) {
 				restore_unbound_workers_cpumask(pool, cpu);
 
 			mutex_unlock(&pool->attach_mutex);
