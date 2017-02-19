@@ -257,35 +257,35 @@ SRCARCH 	:= $(ARCH)
 
 # Additional ARCH settings for x86
 ifeq ($(ARCH),i386)
-        SRCARCH := x86
+	SRCARCH := x86
 endif
 ifeq ($(ARCH),x86_64)
-        SRCARCH := x86
+	SRCARCH := x86
 endif
 
 # Additional ARCH settings for sparc
 ifeq ($(ARCH),sparc32)
-       SRCARCH := sparc
+	SRCARCH := sparc
 endif
 ifeq ($(ARCH),sparc64)
-       SRCARCH := sparc
+	SRCARCH := sparc
 endif
 
 # Additional ARCH settings for sh
 ifeq ($(ARCH),sh64)
-       SRCARCH := sh
+	SRCARCH := sh
 endif
 
 # Additional ARCH settings for tile
 ifeq ($(ARCH),tilepro)
-       SRCARCH := tile
+	SRCARCH := tile
 endif
 ifeq ($(ARCH),tilegx)
-       SRCARCH := tile
+	SRCARCH := tile
 endif
 
 # Where to locate arch specific headers
-hdr-arch  := $(SRCARCH)
+hdr-arch  	:= $(SRCARCH)
 
 KCONFIG_CONFIG	?= .config
 export KCONFIG_CONFIG
@@ -295,14 +295,16 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 	  else if [ -x /bin/bash ]; then echo /bin/bash; \
 	  else echo sh; fi ; fi)
 
-HOSTCC       = gcc
-HOSTCXX      = g++
-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89
-HOSTCXXFLAGS = -O2
+CCACHE		:= $(shell which ccache)
+
+HOSTCC       	= $(CCACHE) gcc
+HOSTCXX      	= $(CCACHE) g++
+HOSTCFLAGS   	= -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89
+HOSTCXXFLAGS 	= -O2
 
 ifeq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
-HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter \
-		-Wno-missing-field-initializers -fno-delete-null-pointer-checks
+HOSTCFLAGS  	+= -Wno-unused-value -Wno-unused-parameter \
+		   -Wno-missing-field-initializers -fno-delete-null-pointer-checks
 endif
 
 # Decide whether to build built-in, modular, or both.
@@ -354,7 +356,7 @@ include $(srctree)/scripts/Kbuild.include
 # Make variables (CC, etc...)
 AS		= $(CROSS_COMPILE)as
 LD		= $(CROSS_COMPILE)ld
-REAL_CC		= $(CROSS_COMPILE)gcc
+REAL_CC		= $(CCACHE) $(CROSS_COMPILE)gcc
 CPP		= $(CC) -E
 AR		= $(CROSS_COMPILE)ar
 NM		= $(CROSS_COMPILE)nm
@@ -408,12 +410,12 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-format-security \
 		   -std=gnu89
 
-KBUILD_AFLAGS_KERNEL :=
-KBUILD_CFLAGS_KERNEL :=
-KBUILD_AFLAGS   := -D__ASSEMBLY__
-KBUILD_AFLAGS_MODULE  := -DMODULE
-KBUILD_CFLAGS_MODULE  := -DMODULE
-KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
+KBUILD_AFLAGS_KERNEL 	:=
+KBUILD_CFLAGS_KERNEL 	:=
+KBUILD_AFLAGS		:= -D__ASSEMBLY__
+KBUILD_AFLAGS_MODULE  	:= -DMODULE
+KBUILD_CFLAGS_MODULE  	:= -DMODULE
+KBUILD_LDFLAGS_MODULE 	:= -T $(srctree)/scripts/module-common.lds
 
 # Read KERNELRELEASE from include/config/kernel.release (if it exists)
 KERNELRELEASE = $(shell cat include/config/kernel.release 2> /dev/null)
@@ -439,11 +441,11 @@ export MODVERDIR := $(if $(KBUILD_EXTMOD),$(firstword $(KBUILD_EXTMOD))/).tmp_ve
 
 # Files to ignore in find ... statements
 
-export RCS_FIND_IGNORE := \( -name SCCS -o -name BitKeeper -o -name .svn -o    \
-			  -name CVS -o -name .pc -o -name .hg -o -name .git \) \
-			  -prune -o
-export RCS_TAR_IGNORE := --exclude SCCS --exclude BitKeeper --exclude .svn \
-			 --exclude CVS --exclude .pc --exclude .hg --exclude .git
+export RCS_FIND_IGNORE 	:= \( -name SCCS -o -name BitKeeper -o -name .svn -o    \
+			   -name CVS -o -name .pc -o -name .hg -o -name .git \) \
+			   -prune -o
+export RCS_TAR_IGNORE 	:= --exclude SCCS --exclude BitKeeper --exclude .svn \
+			   --exclude CVS --exclude .pc --exclude .hg --exclude .git
 
 # ===========================================================================
 # Rules shared between *config targets and build targets
@@ -637,9 +639,9 @@ ifdef CONFIG_READABLE_ASM
 # reorder blocks reorders the control in the function
 # ipa clone creates specialized cloned functions
 # partial inlining inlines only parts of functions
-KBUILD_CFLAGS += $(call cc-option,-fno-reorder-blocks,) \
-                 $(call cc-option,-fno-ipa-cp-clone,) \
-                 $(call cc-option,-fno-partial-inlining)
+KBUILD_CFLAGS 	+= $(call cc-option,-fno-reorder-blocks,) \
+              	   $(call cc-option,-fno-ipa-cp-clone,) \
+               	   $(call cc-option,-fno-partial-inlining)
 endif
 
 ifneq ($(CONFIG_FRAME_WARN),0)
