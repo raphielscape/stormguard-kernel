@@ -176,7 +176,10 @@ void fixup_lower_ownership(struct dentry *dentry, const char *name)
 	gid_t gid = sbi->options.fs_low_gid;
 	struct iattr newattrs;
 
-	info = SDCARDFS_I(dentry->d_inode);
+	if (!sbi->options.gid_derivation)
+		return;
+
+	info = SDCARDFS_I(d_inode(dentry));
 	info_d = info->data;
 	perm = info_d->perm;
 	if (info_d->under_obb) {
