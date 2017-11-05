@@ -557,6 +557,7 @@ static noinline int hiddev_ioctl_usage(struct hiddev *hiddev, unsigned int cmd, 
 				    uref_multi->values[i];
 			goto goodreturn;
 		}
+}
 
 goodreturn:
 		kfree(uref_multi);

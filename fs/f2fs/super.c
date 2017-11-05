@@ -1394,19 +1394,11 @@ static inline bool sanity_check_area_boundary(struct f2fs_sb_info *sbi,
 	} else if (main_end_blkaddr < seg_end_blkaddr) {
 		int err = 0;
 		char *res;
-<<<<<<< HEAD
 
 		/* fix in-memory information all the time */
 		raw_super->segment_count = cpu_to_le32((main_end_blkaddr -
 				segment0_blkaddr) >> log_blocks_per_seg);
 
-=======
-
-		/* fix in-memory information all the time */
-		raw_super->segment_count = cpu_to_le32((main_end_blkaddr -
-				segment0_blkaddr) >> log_blocks_per_seg);
-
->>>>>>> 30018b14deb8... GCC 7x: fix error
 		if (f2fs_readonly(sb) || bdev_read_only(sb->s_bdev)) {
 			set_sbi_flag(sbi, SBI_NEED_SB_WRITE);
 			res = "internally";
