@@ -5,9 +5,12 @@ cd kernel/files/mido;
 git config --global user.name "Adek Maulana"
 git config --global user.email "adek@techdro.id"
 
+mkdir -p MIUI;
+cp *.zip MIUI;
+
 git add -f .
 git remote rm origin
 git remote add origin https://adekmaulana:$GITHUB_API_KEY@github.com/techdro-id/zip.git
-git add -f
+git add -f .
 git commit -m "Stormguard: $TRAVIS_BUILD_NUMBER ${VERSION} $ZIPNAME"
 git push -fq origin master
