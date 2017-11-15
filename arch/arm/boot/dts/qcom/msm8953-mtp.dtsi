@@ -241,7 +241,6 @@
 	status = "ok";
 };
 
-
 &pm8953_gpios {
 	/* GPIO 2 (NFC_CLK_REQ) */
 	gpio@c100 {
