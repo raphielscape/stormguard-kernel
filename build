@@ -125,7 +125,24 @@ cd -;
 if [ -f "$FINAL_ZIP" ];
 then
 echo -e "$ZIPNAME\nzip can be found at $FINAL_ZIP";
-echo "===================================================================";
+echo "=============================================";
+git config --global user.name "Adek Maulana"
+git config --global user.email "adek@techdro.id"
+cd ${ZIP_DIR};
+
+export UPLOAD="${FINAL_ZIP}/MIUI";
+export UPLOAD_ZIP="${UPLOAD}/$ZIPNAME";
+
+mkdir -p MIUI;
+
+cp $FINAL_ZIP ${UPLOAD};
+
+git add -f $UPLOAD_ZIP
+git remote rm origin
+git remote add origin https://adekmaulana:$GITHUB_API_KEY@github.com/techdro-id/zip.git
+git commit -m "Stormguard: Travis CI Build #$TRAVIS_BUILD_NUMBER"
+git push -fq origin master
+
 else
 echo -e "Zip Creation Failed =(";
 fi # FINAL_ZIP check
