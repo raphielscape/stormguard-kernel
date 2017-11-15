@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-cd -;
-cd ${ZIP_DIR};
+cd $HOME;
+cd kernel/files/mido;
 git config --global user.name "Adek Maulana"
 git config --global user.email "adek@techdro.id"
 
