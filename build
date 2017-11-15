@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+
+function check_toolchain() {
+
+    export TC="$(find ${TOOLCHAIN}/bin -type f -name aarch64-*-gcc)";
+
+	if [[ -f "${TC}" ]]; then
+		export CROSS_COMPILE="${TOOLCHAIN}/bin/$(echo ${TC} | awk -F '/' '{print $NF'} |\
+sed -e 's/gcc//')";
+		echo -e "Using toolchain: $(${CROSS_COMPILE}gcc --version | head -1)";
+	else
+		echo -e "No suitable toolchain found in ${TOOLCHAIN}";
+		exit 1;
+	fi
+}
+
+export DEVICE=$1;
+if [[ -z ${DEVICE} ]]; then
+    export DEVICE="mido";
+fi
+
+KERNELDIR="${HOME}/kernel/stormguard"
+
+# These won't change
+export SRCDIR="${HOME}/kernel";
+export OUTDIR="${KERNELDIR}/out";
+export ANYKERNEL="${SRCDIR}/anykernel/zImage";
+export ARCH="arm64";
+export SUBARCH="arm64";
+export TOOLCHAIN="${SRCDIR}/toolchain/SDK24";
+export DEFCONFIG="${DEVICE}_defconfig";
+export ZIP_DIR="${SRCDIR}/files/${DEVICE}";
+export IMAGE="arch/${ARCH}/boot/Image.gz-dtb";
+export DB="arch/arm/boot/dts/qcom/${DEVICE}.dtb";
+export DB0="arch/arm64/boot/dts/qcom/msm8953-qrd-sku3.dtb";
+export DB1="arch/arm64/boot/dts/qcom/msm8952-qrd-skum.dtb";
+export DB2="arch/arm64/boot/dts/qcom/msm8952-cdp.dtb";
+export DB3="arch/arm64/boot/dts/qcom/msm8952-ext-codec-cdp.dtb";
+export DB4="arch/arm64/boot/dts/qcom/msm8952-mtp.dtb";
+export MODULEDIR="${OUTDIR}/modules";
+export VERSION="2.6";
+
+export MAKE="make";
+
+if [[ -z "${JOBS}" ]]; then
+    export JOBS="$(grep -c '^processor' /proc/cpuinfo)";
+fi
+
+check_toolchain;
+
+export TCVERSION1="$(${CROSS_COMPILE}gcc --version | head -1 |\
+awk -F '(' '{print $2}' | awk '{print tolower($1)}')"
+export TCVERSION2="$(${CROSS_COMPILE}gcc --version | head -1 |\
+awk -F ')' '{print $2}' | awk '{print tolower($1)}')"
+if [[ -z "${NAME}" ]]; then
+    export NAME="Stormguard-MIUI";
+fi
+
+export ZIPNAME="${NAME}-${VERSION}-$(date +%Y%m%d-%H%M)-${DEVICE}.zip"
+export LOCALVERSION="${TCVERSION1}.${TCVERSION2}"
+export FINAL_ZIP="${ZIP_DIR}/${ZIPNAME}"
+
+rm -rfv out;
+
+[ ! -d "${ANYKERNEL}" ] && mkdir -pv ${ANYKERNEL}
+[ ! -d "${ZIP_DIR}" ] && mkdir -pv ${ZIP_DIR}
+[ ! -d "${OUTDIR}" ] && mkdir -pv ${OUTDIR}
+[ ! -d "${MODULEDIR}" ] && mkdir -pv ${MODULEDIR}/pronto
+
+rm -fv ${IMAGE};
+
+if [[ "$@" =~ "mrproper" ]]; then
+    ${MAKE} mrproper
+fi
+
+if [[ "$@" =~ "clean" ]]; then
+    ${MAKE} clean
+fi
+
+${MAKE} $DEFCONFIG;
+START=$(date +"%s");
+${MAKE} -j${JOBS};
+exitCode="$?";
+END=$(date +"%s")
+DIFF=$(($END - $START))
+echo " ";
+echo -e "Build took $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.";
+echo " ";
+
+if [[ ! -f "${IMAGE}" ]]; then
+    echo -e "Build failed :P";
+    exit 1;
+else
+    echo -e "Build Succesful!";
+fi
+
+sign="scripts/sign-file";
+KEY0="signing_key.x509";
+KEY1="signing_key.priv";
+MODULE="drivers/staging/prima/wlan.ko";
+MODULES="${MODULEDIR}/wlan.ko";
+PRONTO="${MODULEDIR}/pronto/pronto_wlan.ko";
+ZIMAGE="${OUTDIR}/zImage";
+
+echo -e "gen-zImage";
+cat $DB0 $DB1 $DB2 $DB3 $DB4 > $DB;
+echo -e "Database Combined & now making zImage";
+cat ${IMAGE} $DB > ${ZIMAGE};
+
+echo -e "Signing Module";
+$sign sha512 $KEY1 $KEY0 $MODULE;
+cp $MODULE ${MODULEDIR};
+cp -ar $MODULES ${PRONTO};
+
+echo -e "Copying Modules"
+cd ${MODULEDIR} ${ANYKERNEL};
+
+echo -e "Copying zImage";
+cp ${ZIMAGE} ${ANYKERNEL};
+
+echo -e "Moving to AnyKernel";
+cd ${ANYKERNEL};
+zip -r9 ${FINAL_ZIP} *;
+cd -;
+if [ -f "$FINAL_ZIP" ];
+then
+echo -e "$ZIPNAME\nzip can be found at $FINAL_ZIP";
+echo "===================================================================";
+else
+echo -e "Zip Creation Failed =(";
+fi # FINAL_ZIP check
+
+exit ${exitCode};

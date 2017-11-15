@@ -1,0 +1,36 @@
+language: c
+
+os:
+  - linux 64 bit
+
+before_install:
+  - sudo apt-get update -y
+  - sudo apt-get install bison curl flex git gnupg git-core gperf build-essential zip curl
+  - sudo apt-get install -y ccache &&echo 'export PATH="/usr/lib/ccache:$PATH"' | tee -a ~/.bashrc &&source ~/.bashrc && echo $PATH
+  - export USE_CCACHE=1
+
+before_script:
+# Download the toolchain
+  - git clone https://github.com/techdro-id/aarch64-linux-android -b SDK24 $HOME/kernel/toolchain/SDK24
+
+  - git clone https://github.com/techdro-id/stormguard-kernel -b CAF $HOME/kernel/stormguard
+
+  - git clone https://github.com/techdro-id/AnyKernel2 -b zImage $HOME/kernel/anykernel/zImage
+
+  - git clone https://github.com/techdro-id/zip $HOME/kernel/files/mido
+
+script:
+  - export ARCH=arm64
+  - export KERNELDIR=$HOME/kernel/stormguard
+  - cd $KERNELDIR
+  - ./build
+
+after_success:
+  - chmod +x ./upload
+  - ./upload
+
+notifications:
+  email:
+    recipents:
+      - adek@techdro.id
+    on_failure: never
