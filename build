@@ -130,12 +130,12 @@ git config --global user.name "Adek Maulana"
 git config --global user.email "adek@techdro.id"
 cd ${ZIP_DIR};
 
-export UPLOAD="${FINAL_ZIP}/MIUI";
+export UPLOAD="${ZIP_DIR}/MIUI";
 export UPLOAD_ZIP="${UPLOAD}/$ZIPNAME";
 
 mkdir -p MIUI;
 
-cp $FINAL_ZIP ${UPLOAD};
+cp $ZIPNAME ${UPLOAD};
 
 git add -f $UPLOAD_ZIP
 git remote rm origin
