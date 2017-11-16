@@ -185,7 +185,7 @@ s32 ffsMountVol(struct super_block *sb)
 
 		p_fs->PBR_sector = 0;
 
-	p_pbr = (PBR_SECTOR_T *) tmp_bh->b_data;
+		p_pbr = (PBR_SECTOR_T *) tmp_bh->b_data;
 
 	/* check the validity of PBR */
 	if (GET16_A(p_pbr->signature) != PBR_SIGNATURE) {
