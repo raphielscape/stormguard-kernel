@@ -113,7 +113,7 @@ cp $MODULE ${MODULEDIR};
 cp -ar $MODULES ${PRONTO};
 
 echo -e "Copying Modules"
-cd -R ${MODULEDIR} ${ANYKERNEL};
+cp -R ${MODULEDIR} ${ANYKERNEL};
 
 echo -e "Copying zImage";
 cp ${ZIMAGE} ${ANYKERNEL};
