@@ -38,7 +38,7 @@ export DB2="arch/arm64/boot/dts/qcom/msm8952-cdp.dtb";
 export DB3="arch/arm64/boot/dts/qcom/msm8952-ext-codec-cdp.dtb";
 export DB4="arch/arm64/boot/dts/qcom/msm8952-mtp.dtb";
 export MODULEDIR="${OUTDIR}/modules";
-export VERSION="2.6";
+export VERSION="2.7";
 
 export MAKE="make";
 
