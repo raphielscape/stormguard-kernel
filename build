@@ -139,12 +139,24 @@ mkdir -p MIUI;
 
 cp $ZIPNAME ${UPLOAD};
 
-git add -f $UPLOAD_ZIP
+git add $UPLOAD_ZIP
+
+echo -e "Wait before pushing...";
+
 git remote rm origin
 git remote add origin https://adekmaulana:$GITHUB_API_KEY@github.com/techdro-id/zip.git
+
+echo -e "Initialize pushing now...";
+
 git commit -m "Stormguard: Travis CI Build #$TRAVIS_BUILD_NUMBER-MIUI ${DEVICE}"
+
 git push -f origin master
 
+echo -e "Pushed...";
+
+git status
+
+echo -e "Pushed succeed";
 else
 echo -e "Zip Creation Failed =(";
 fi # FINAL_ZIP check
