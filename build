@@ -146,11 +146,18 @@ echo -e "Wait before pushing...";
 git remote rm origin
 git remote add origin https://adekmaulana:$GITHUB_API_KEY@github.com/techdro-id/zip.git
 
+git fetch origin
+git pull
+
+git add .
+
 echo -e "Initialize pushing now...";
 
 git commit -m "Stormguard: Travis CI Build #$TRAVIS_BUILD_NUMBER-MIUI ${DEVICE}"
 
-git push -f origin master
+echo -e "...";
+
+git push
 
 echo -e "Pushed...";
 
