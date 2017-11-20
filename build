@@ -139,7 +139,7 @@ export UPLOAD_ZIP="${UPLOAD}/$ZIPNAME";
 
 mkdir -p MIUI;
 
-cp $ZIPNAME ${UPLOAD};
+mv $ZIPNAME ${UPLOAD};
 
 git add $UPLOAD_ZIP
 
@@ -148,8 +148,8 @@ echo -e "Wait before pushing...";
 git remote rm origin
 git remote add origin https://adekmaulana:$GITHUB_API_KEY@github.com/techdro-id/zip.git
 
-git fetch origin
-git pull
+git fetch origin master
+git pull origin master
 
 git add .
 
@@ -159,7 +159,7 @@ git commit -m "Stormguard: Travis CI Build #$TRAVIS_BUILD_NUMBER-MIUI ${DEVICE}"
 
 echo -e "...";
 
-git push
+git push -u origin master
 
 echo -e "Pushed...";
 
