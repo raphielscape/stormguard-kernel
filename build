@@ -45,7 +45,7 @@ export KBUILD_BUILD_HOST="ProjectBish-Bot";
 export MAKE="make";
 
 if [[ -z "${JOBS}" ]]; then
-    export JOBS="$(grep -c '^processor' /proc/cpuinfo)";
+    export JOBS="$(nproc --all)";
 fi
 
 check_toolchain;
@@ -130,7 +130,7 @@ echo -e "$ZIPNAME\nzip can be found at $FINAL_ZIP";
 echo "=============================================";
 
 git config --global user.name "Adek Maulana"
-git config --global user.email "adek@techdro.id"
+git config --global user.email "adekm@techdro.id"
 
 cd ${ZIP_DIR};
 
