@@ -27,7 +27,7 @@ export OUTDIR="${KERNELDIR}/out";
 export ANYKERNEL="${SRCDIR}/anykernel/zImage";
 export ARCH="arm64";
 export SUBARCH="arm64";
-export TOOLCHAIN="${SRCDIR}/toolchain/SDK24";
+export TOOLCHAIN="${SRCDIR}/toolchain/SDK26";
 export DEFCONFIG="${DEVICE}_defconfig";
 export ZIP_DIR="${SRCDIR}/files/${DEVICE}";
 export IMAGE="arch/${ARCH}/boot/Image.gz-dtb";
@@ -38,7 +38,7 @@ export DB2="arch/arm64/boot/dts/qcom/msm8952-cdp.dtb";
 export DB3="arch/arm64/boot/dts/qcom/msm8952-ext-codec-cdp.dtb";
 export DB4="arch/arm64/boot/dts/qcom/msm8952-mtp.dtb";
 export MODULEDIR="${OUTDIR}/modules";
-export VERSION="2.8";
+export VERSION="2.9";
 export KBUILD_BUILD_USER="adek";
 export KBUILD_BUILD_HOST="ProjectBish-Bot";
 
@@ -59,7 +59,7 @@ if [[ -z "${NAME}" ]]; then
 fi
 
 export ZIPNAME="${NAME}-${VERSION}-$(date +%Y%m%d-%H%M)-${DEVICE}.zip"
-# export LOCALVERSION="${TCVERSION1}.${TCVERSION2}"
+export LOCALVERSION="-MIUI"
 export FINAL_ZIP="${ZIP_DIR}/${ZIPNAME}"
 
 rm -rfv out;
