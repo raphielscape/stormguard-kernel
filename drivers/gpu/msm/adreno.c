@@ -1075,9 +1075,9 @@ static int adreno_remove(struct platform_device *pdev)
 	/* The memory is fading */
 	_adreno_free_memories(adreno_dev);
 
-#ifdef CONFIG_INPUT
+//#ifdef CONFIG_INPUT
 	input_unregister_handler(&adreno_input_handler);
-#endif
+//#endif
 	adreno_sysfs_close(adreno_dev);
 
 	adreno_coresight_remove(adreno_dev);
