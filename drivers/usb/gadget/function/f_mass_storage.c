@@ -2839,7 +2839,25 @@ static ssize_t file_store(struct device *dev, struct device_attribute *attr,
 	return fsg_store_file(curlun, filesem, buf, count);
 }
 
+static ssize_t cdrom_show(struct device *dev, struct device_attribute *attr,
+			 char *buf)
+{
+	struct fsg_lun		*curlun = fsg_lun_from_dev(dev);
+
+	return fsg_show_cdrom(curlun, buf);
+}
+
+static ssize_t cdrom_store(struct device *dev, struct device_attribute *attr,
+			const char *buf, size_t count)
+{
+	struct fsg_lun		*curlun = fsg_lun_from_dev(dev);
+	struct rw_semaphore	*filesem = dev_get_drvdata(dev);
+
+	return fsg_store_cdrom(curlun, filesem, buf, count);
+}
+
 static DEVICE_ATTR_RW(ro);
+static DEVICE_ATTR_RW(cdrom);
 static DEVICE_ATTR_RW(nofua);
 static DEVICE_ATTR_RW(file);
 static DEVICE_ATTR(perf, 0644, fsg_show_perf, fsg_store_perf);
@@ -2969,6 +2987,7 @@ EXPORT_SYMBOL_GPL(fsg_common_set_num_buffers);
 static inline void fsg_common_remove_sysfs(struct fsg_lun *lun)
 {
 	device_remove_file(&lun->dev, &dev_attr_nofua);
+	device_remove_file(&lun->dev, &dev_attr_cdrom);
 	/*
 	 * device_remove_file() =>
 	 *
@@ -3128,6 +3147,10 @@ static inline int fsg_common_add_sysfs(struct fsg_common *common,
 	if (rc)
 		goto error;
 	rc = device_create_file(&lun->dev, &dev_attr_nofua);
+	if (rc)
+		goto error;
+
+	rc = device_create_file(&lun->dev, &dev_attr_cdrom);
 	if (rc)
 		goto error;
 
