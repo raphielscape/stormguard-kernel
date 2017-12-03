@@ -183,6 +183,7 @@ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
 
 		dev_dbg(be->dev, "ASoC: BE %s event %d dir %d\n",
 				be->dai_link->name, event, dir);
+
 		if (event == SND_SOC_DAPM_STREAM_STOP && be->dpcm[dir].users >= 1) {
 			pr_debug("%s Don't close BE \n", __func__);
 			continue;
